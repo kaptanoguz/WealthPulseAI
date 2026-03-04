@@ -1,0 +1,35 @@
+import type { Metadata } from 'next';
+import { ColorSchemeScript, MantineProvider } from '@mantine/core';
+import { Notifications } from '@mantine/notifications';
+import { ModalsProvider } from '@mantine/modals';
+import { theme } from '@/theme/theme';
+import './globals.css';
+
+export const metadata: Metadata = {
+  title: 'WealthPulse AI — Finansal Varlık Yönetim Platformu',
+  description: 'Modern AI destekli finansal varlık yönetimi, portföy takibi ve piyasa analizi platformu.',
+};
+
+export default function RootLayout({ children }: { children: React.ReactNode }) {
+  return (
+    <html lang="tr" data-mantine-color-scheme="dark">
+      <head>
+        <ColorSchemeScript defaultColorScheme="dark" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
+          rel="stylesheet"
+        />
+      </head>
+      <body>
+        <MantineProvider theme={theme} defaultColorScheme="dark">
+          <ModalsProvider>
+            <Notifications position="top-right" />
+            {children}
+          </ModalsProvider>
+        </MantineProvider>
+      </body>
+    </html>
+  );
+}
