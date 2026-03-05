@@ -31,8 +31,11 @@ export interface MarketItem {
     price: number;
     change: number;
     changePercent: number;
-    type: 'stock' | 'etf' | 'gold' | 'forex' | 'crypto';
+    type: 'stock' | 'etf' | 'gold' | 'forex' | 'crypto' | 'fund';
     sparkline: number[];
+    isLive?: boolean;
+    market?: string;
+    currency?: string;
 }
 
 export interface ChatMessage {

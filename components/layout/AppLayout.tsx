@@ -27,12 +27,16 @@ import {
     IconSun,
     IconMoon,
     IconActivity,
+    IconReceipt2,
+    IconNews,
 } from '@tabler/icons-react';
 
 const navItems = [
     { label: 'Dashboard', icon: IconDashboard, path: '/dashboard' },
     { label: 'Portföy', icon: IconBriefcase, path: '/portfolio' },
     { label: 'Piyasalar', icon: IconChartLine, path: '/markets' },
+    { label: 'Gelir/Gider', icon: IconReceipt2, path: '/budget' },
+    { label: 'Haberler', icon: IconNews, path: '/news' },
     { label: 'Simülasyon', icon: IconCpu, path: '/simulator' },
     { label: 'Raporlar', icon: IconReport, path: '/reports' },
     { label: 'Ayarlar', icon: IconSettings, path: '/settings' },
