@@ -49,6 +49,8 @@ export default function PortfolioPage() {
     const [newAvgCost, setNewAvgCost] = useState<number | string>(0);
     const [newCurrentPrice, setNewCurrentPrice] = useState<number | string>(0);
     const [selectedGoldType, setSelectedGoldType] = useState<string | null>(null);
+    const [newPieceCount, setNewPieceCount] = useState<number | string>(1);
+    const [newWeightPerPiece, setNewWeightPerPiece] = useState<number | string>(0);
 
     const totalValue = assets.reduce((sum, a) => sum + a.quantity * a.currentPrice, 0);
 
@@ -104,7 +106,13 @@ export default function PortfolioPage() {
     };
 
     const handleAddAsset = () => {
-        if (!newSymbol || !newName || !newQuantity || !newAvgCost) {
+        let finalQuantity = Number(newQuantity);
+
+        if (selectedGoldType === '22-ayar-bilezik') {
+            finalQuantity = Number(newPieceCount) * Number(newWeightPerPiece);
+        }
+
+        if (!newSymbol || !newName || !finalQuantity || !newAvgCost) {
             notifications.show({ title: 'Eksik Bilgi', message: 'Lütfen tüm alanları doldurun', color: 'red' });
             return;
         }
@@ -114,7 +122,7 @@ export default function PortfolioPage() {
             symbol: newSymbol.toUpperCase(),
             name: newName,
             type: (newType as Asset['type']) || 'stock',
-            quantity: Number(newQuantity),
+            quantity: finalQuantity,
             avgCost: Number(newAvgCost),
             currentPrice: Number(newCurrentPrice) || Number(newAvgCost),
             change24h: 0,
@@ -132,6 +140,8 @@ export default function PortfolioPage() {
         setNewSymbol('');
         setNewName('');
         setNewQuantity(0);
+        setNewPieceCount(1);
+        setNewWeightPerPiece(0);
         setNewAvgCost(0);
         setNewCurrentPrice(0);
         setSelectedGoldType(null);
@@ -146,6 +156,8 @@ export default function PortfolioPage() {
         setNewSymbol('');
         setNewName('');
         setNewQuantity(0);
+        setNewPieceCount(1);
+        setNewWeightPerPiece(0);
         setNewAvgCost(0);
         setNewCurrentPrice(0);
         open();
@@ -316,15 +328,38 @@ export default function PortfolioPage() {
                                 </Paper>
                             )}
 
-                            <NumberInput
-                                label="Miktar (adet veya gram)"
-                                placeholder="ör: 5 (adet) veya 50 (gram)"
-                                value={newQuantity}
-                                onChange={setNewQuantity}
-                                min={0}
-                                decimalScale={2}
-                                required
-                            />
+                            {selectedGoldType === '22-ayar-bilezik' ? (
+                                <Group grow>
+                                    <NumberInput
+                                        label="Bilezik Adedi"
+                                        placeholder="ör: 3"
+                                        value={newPieceCount}
+                                        onChange={setNewPieceCount}
+                                        min={1}
+                                        decimalScale={0}
+                                        required
+                                    />
+                                    <NumberInput
+                                        label="Bilezik Gramı (tekil)"
+                                        placeholder="ör: 20"
+                                        value={newWeightPerPiece}
+                                        onChange={setNewWeightPerPiece}
+                                        min={0}
+                                        decimalScale={2}
+                                        required
+                                    />
+                                </Group>
+                            ) : (
+                                <NumberInput
+                                    label="Miktar (adet veya gram)"
+                                    placeholder="ör: 5 (adet) veya 50 (gram)"
+                                    value={newQuantity}
+                                    onChange={setNewQuantity}
+                                    min={0}
+                                    decimalScale={2}
+                                    required
+                                />
+                            )}
 
                             <NumberInput
                                 label="Alış Fiyatınız"
@@ -340,7 +375,11 @@ export default function PortfolioPage() {
                             {Number(newAvgCost) > 0 && Number(newCurrentPrice) > 0 && (
                                 <Paper p="md" radius="md" style={{ background: 'var(--wp-bg-secondary)' }}>
                                     {(() => {
-                                        const pnl = (Number(newCurrentPrice) - Number(newAvgCost)) * Number(newQuantity || 0);
+                                        const qty = selectedGoldType === '22-ayar-bilezik'
+                                            ? Number(newPieceCount) * Number(newWeightPerPiece)
+                                            : Number(newQuantity || 0);
+
+                                        const pnl = (Number(newCurrentPrice) - Number(newAvgCost)) * qty;
                                         const pnlPct = Number(newAvgCost) > 0 ? ((Number(newCurrentPrice) - Number(newAvgCost)) / Number(newAvgCost)) * 100 : 0;
                                         const isProfit = pnl >= 0;
                                         return (
@@ -367,7 +406,13 @@ export default function PortfolioPage() {
                                 fullWidth
                                 mt="sm"
                                 color="yellow"
-                                disabled={!selectedGoldType || !newQuantity || !newAvgCost}
+                                disabled={
+                                    !selectedGoldType ||
+                                    (selectedGoldType === '22-ayar-bilezik'
+                                        ? (!newPieceCount || !newWeightPerPiece)
+                                        : !newQuantity) ||
+                                    !newAvgCost
+                                }
                             >
                                 🪙 Altını Portföye Ekle
                             </Button>
