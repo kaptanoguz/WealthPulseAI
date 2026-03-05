@@ -101,6 +101,7 @@ const filters = [
     { label: 'Altın', value: 'gold' },
     { label: 'Döviz', value: 'forex' },
     { label: 'Kripto', value: 'crypto' },
+    { label: 'Fonlar', value: 'fund' },
 ];
 
 export default function MarketsPage() {
@@ -351,9 +352,18 @@ export default function MarketsPage() {
                                 {usItems.map(item => <MarketCard key={item.symbol} item={item} />)}
                             </SimpleGrid>
                         </div>
+                    )}                    {/* TEFAS Funds */}
+                    {(showAll || filter === 'fund') && fundItems.length > 0 && (
+                        <div>
+                            <Group gap={8} mb="sm">
+                                <Text size="md" fw={700}>📈 TEFAS Fonları</Text>
+                                <Badge size="xs" color="cyan" variant="light">{fundItems.length} fon</Badge>
+                            </Group>
+                            <SimpleGrid cols={{ base: 1, sm: 2, md: 3, lg: 4 }} spacing="md">
+                                {fundItems.map(item => <MarketCard key={item.symbol} item={item} />)}
+                            </SimpleGrid>
+                        </div>
                     )}
-
-
 
                     {/* Forex */}
                     {(showAll || filter === 'forex') && forexItems.length > 0 && (
